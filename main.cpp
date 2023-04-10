@@ -15,7 +15,7 @@ class HugeInt
 {
     friend ostream& operator<<(ostream&, const HugeInt&);
 public:
-    static const int digits = 30;
+    static const int digits = 60;
     HugeInt(int = 0); // conversion/default constructor
     HugeInt(const char*); // conversion constructor
    
@@ -184,7 +184,7 @@ HugeInt HugeInt::operator+(const HugeInt& num) const {
         int tempnum = integer[dig1 - i - 1] + num.integer[dig2 - i - 1];
         int overmax = 0;
         
-        if (tempnum < 9999)
+        if (tempnum <= 9999)
         {
             overmax = 0;
         }
@@ -212,7 +212,7 @@ HugeInt HugeInt::operator+(const HugeInt& num) const {
             while (k<= abs(dig1 - dig2)){
                 int tempnum = temp.integer[abs(dig1 - dig2) - k] + lastovermax;
                 int overmax = 0;
-                if (tempnum < 9999)
+                if (tempnum <= 9999)
                 {
                     overmax = 0;
                 }
@@ -337,7 +337,7 @@ HugeInt HugeInt::normalsub(const HugeInt& num)const {
         while (k <= abs(dig1 - dig2)) {
             int tempnum = temp.integer[abs(dig1 - dig2) - k] + lastovermax;
             int overmax = 0;
-            if (tempnum > 0)
+            if (tempnum >= 0)
             {
                 overmax = 0;
             }
@@ -400,7 +400,7 @@ bool HugeInt::negetive(const HugeInt& num)const {
     int i = 0;
     int lastovermax = 0;
     while ((dig1 - i) != 0 && (dig2 - i) != 0) {
-        int tempnum = integer[dig1 - i - 1] - num.integer[dig2 - i - 1];
+        int tempnum = integer[dig1 - i - 1] - num.integer[dig2 - i - 1] + lastovermax;
         int overmax = 0;
 
         if (tempnum >= 0)
@@ -412,7 +412,7 @@ bool HugeInt::negetive(const HugeInt& num)const {
             tempnum = tempnum + 10000;
         }
 
-        temp.integer[dig - i - 1] = tempnum + lastovermax;
+        temp.integer[dig - i - 1] = tempnum ;
         lastovermax = overmax;
         i++;
     }
@@ -426,7 +426,7 @@ bool HugeInt::negetive(const HugeInt& num)const {
             while (k <= abs(dig1 - dig2)) {
                 int tempnum = temp.integer[abs(dig1 - dig2) - k] + lastovermax;
                 int overmax = 0;
-                if (tempnum >0)
+                if (tempnum >=0)
                 {
                     overmax = 0;
                 }
@@ -534,7 +534,7 @@ ostream& operator<<(ostream& out, const HugeInt& t) {
 int main() {
     HugeInt a(7654321);
     HugeInt b(1234567);
-    HugeInt c(1234);
-    cout << a * b << a / c << endl;
+    HugeInt c(123);
+    cout << " "<<a*b << endl;
     return 0;
 }
