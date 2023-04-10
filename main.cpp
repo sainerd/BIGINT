@@ -16,19 +16,23 @@ class HugeInt
     friend ostream& operator<<(ostream&, const HugeInt&);
 public:
     static const int digits = 30;
-    HugeInt(long = 0); // conversion/default constructor
+    HugeInt(int = 0); // conversion/default constructor
     HugeInt(const char*); // conversion constructor
+   
     bool negetive(const HugeInt&)const;
     HugeInt normalsub(const HugeInt&)const;
 
     // addition operator; HugeInt + HugeInt
     HugeInt operator+(const HugeInt&) const;
     HugeInt operator-(const HugeInt&) const;
-    HugeInt operator>(const HugeInt&) const;
-    HugeInt operator>=(const HugeInt&) const;
-    HugeInt operator<=(const HugeInt&) const;
-    HugeInt operator==(const HugeInt&) const;
-    HugeInt operator!=(const HugeInt&) const;
+    HugeInt operator*(const HugeInt&) const;
+    HugeInt operator/(const HugeInt&) const;
+    bool operator>(const HugeInt&) const;
+    bool operator>=(const HugeInt&) const;
+    bool operator<=(const HugeInt&) const;
+    bool operator<(const HugeInt&) const;
+    bool operator==(const HugeInt&) const;
+    bool operator!=(const HugeInt&) const;
     
     // addition operator; HugeInt + int
     HugeInt operator+(int) const;
@@ -44,7 +48,7 @@ private:
 }; // end class HugeInt
 
 
-HugeInt::HugeInt(long t) {
+HugeInt::HugeInt(int t) {
     if (t == 0) {
         integer[0] = 0;
         integer[1] = -1;
@@ -241,6 +245,45 @@ HugeInt HugeInt::operator+(const HugeInt& num) const {
     cout << temp.getLength();*/
     return temp;
 };
+bool HugeInt::operator>(const HugeInt& num) const {
+    HugeInt temp("0");
+    temp = *this - num;
+    if (temp.integer[0] > 0) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+bool HugeInt::operator<=(const HugeInt& num) const {
+    return !(*this > num);
+}
+bool HugeInt::operator<(const HugeInt& num) const {
+    HugeInt temp("0");
+    temp = num-*this;
+    if (temp.integer[0] > 0) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+bool HugeInt::operator>=(const HugeInt& num) const {
+    return !(*this < num);
+}
+bool HugeInt::operator==(const HugeInt& num) const {
+    HugeInt temp("0");
+    temp = num - *this;
+    if (temp.integer[0] == 0) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+bool HugeInt::operator!=(const HugeInt& num) const {
+    return !(*this == num);
+}
 HugeInt HugeInt::normalsub(const HugeInt& num)const {
     HugeInt temp("0");
     int dig1 = Getdig(getLength());
@@ -288,6 +331,29 @@ HugeInt HugeInt::normalsub(const HugeInt& num)const {
         lastovermax = overmax;
         i++;
     }
+    if (lastovermax == -1) {
+        int k = 1;
+
+        while (k <= abs(dig1 - dig2)) {
+            int tempnum = temp.integer[abs(dig1 - dig2) - k] + lastovermax;
+            int overmax = 0;
+            if (tempnum > 0)
+            {
+                overmax = 0;
+            }
+            else {
+                overmax = -1;
+                tempnum = tempnum + 10000;
+            }
+            temp.integer[abs(dig1 - dig2) - k] = tempnum;
+            lastovermax = overmax;
+            k++;
+
+
+
+        }
+
+    }
     while (temp.integer[0] == 0) {
         
     for (int j = 0; j < dig; j++) {
@@ -295,8 +361,16 @@ HugeInt HugeInt::normalsub(const HugeInt& num)const {
         
     }
     dig--;
+    if (dig == 0) {
+        temp.integer[0] = 0;
+        temp.integer[1] = -1;
+        break;
     }
-    temp.integer[dig] = -((int)log10(temp.integer[0]) + 1 + 4 * (dig - 1));
+    }
+    
+        temp.integer[dig] = -((int)log10(temp.integer[0]) + 1 + 4 * (dig - 1)); 
+    
+    
     return temp;
 
 
@@ -317,10 +391,7 @@ bool HugeInt::negetive(const HugeInt& num)const {
         }
     }
     else if (dig1 < dig2) {
-        dig = dig2;
-        for (int j = 0; j < dig2 - dig1; j++) {
-            temp.integer[j] = num.integer[j];
-        }
+        return 1;
     }
     else if (dig1 = dig2) {
         dig = dig1;
@@ -344,6 +415,36 @@ bool HugeInt::negetive(const HugeInt& num)const {
         temp.integer[dig - i - 1] = tempnum + lastovermax;
         lastovermax = overmax;
         i++;
+    }
+    if (lastovermax ==-1) {
+        if (dig1 == dig2) {
+            lastovermax = -1;
+        }
+        else {
+            int k = 1;
+
+            while (k <= abs(dig1 - dig2)) {
+                int tempnum = temp.integer[abs(dig1 - dig2) - k] + lastovermax;
+                int overmax = 0;
+                if (tempnum >0)
+                {
+                    overmax = 0;
+                }
+                else {
+                    overmax = -1;
+                    tempnum = tempnum + 10000;
+                }
+                temp.integer[abs(dig1 - dig2) - k] = tempnum;
+                lastovermax = overmax;
+                k++;
+
+            }
+            
+
+
+
+        }
+
     }
     if (lastovermax == -1) {
         return 1;
@@ -395,6 +496,27 @@ HugeInt HugeInt::operator-(const char* t) const {
     temp = *this - temp;
     return temp;
 }
+HugeInt HugeInt::operator*(const HugeInt& num) const {
+    HugeInt ticker("0");
+    HugeInt temp("0");
+    HugeInt plus("1");
+    while (ticker <= num) {
+        temp = temp + *this;
+        ticker = ticker + plus;
+    }
+    return temp;
+}
+HugeInt HugeInt::operator/(const HugeInt& num) const {
+    HugeInt ticker("0");
+    HugeInt temp(*this);
+    HugeInt plus("1");
+   
+    while (temp>=num) {
+        temp = temp-num;
+        ticker = ticker + plus;
+    }
+    return ticker;
+}
 ostream& operator<<(ostream& out, const HugeInt& t) {
     int dig= Getdig(t.getLength());
     for (int j = 0; j < dig; j++) { 
@@ -409,3 +531,10 @@ ostream& operator<<(ostream& out, const HugeInt& t) {
     return out;
 
 };
+int main() {
+    HugeInt a(7654321);
+    HugeInt b(1234567);
+    HugeInt c(1234);
+    cout << a * b << a / c << endl;
+    return 0;
+}
