@@ -1,7 +1,7 @@
 
 #include <algorithm>
 #include <cmath>
-using namespace std;
+
 
 
 
@@ -11,44 +11,52 @@ using namespace std;
 #include <cstring> // strlen function prototype
 using namespace std;
 
-class HugeInt
+class TeamWorkBigInt
 {
-    friend ostream& operator<<(ostream&, const HugeInt&);
+    friend ostream& operator<<(ostream&, const TeamWorkBigInt&);
 public:
-    static const int digits = 60;
-    HugeInt(int = 0); // conversion/default constructor
-    HugeInt(const char*); // conversion constructor
-   
-    bool negetive(const HugeInt&)const;
-    HugeInt normalsub(const HugeInt&)const;
+    static const int digits =10000;
+    TeamWorkBigInt(int = 0); // conversion/default constructor
+    TeamWorkBigInt(const char*); // conversion constructor
+    
+    bool negetive(const TeamWorkBigInt&)const;
+    TeamWorkBigInt normalsub(const TeamWorkBigInt&)const;
 
     // addition operator; HugeInt + HugeInt
-    HugeInt operator+(const HugeInt&) const;
-    HugeInt operator-(const HugeInt&) const;
-    HugeInt operator*(const HugeInt&) const;
-    HugeInt operator/(const HugeInt&) const;
-    bool operator>(const HugeInt&) const;
-    bool operator>=(const HugeInt&) const;
-    bool operator<=(const HugeInt&) const;
-    bool operator<(const HugeInt&) const;
-    bool operator==(const HugeInt&) const;
-    bool operator!=(const HugeInt&) const;
+    TeamWorkBigInt operator+(const TeamWorkBigInt&) const;
+    TeamWorkBigInt operator-(const TeamWorkBigInt&) const;
+    TeamWorkBigInt operator*(const TeamWorkBigInt&) const;
+    TeamWorkBigInt operator/(const TeamWorkBigInt&) const;
+    TeamWorkBigInt& operator/=(const TeamWorkBigInt&) const;
+    TeamWorkBigInt& operator+=(const TeamWorkBigInt&) const;
+    TeamWorkBigInt normaldiv(const TeamWorkBigInt&) const;
+    bool operator>(const TeamWorkBigInt&) const;
+    bool operator>=(const TeamWorkBigInt&) const;
+    bool operator<=(const TeamWorkBigInt&) const;
+    bool operator<(const TeamWorkBigInt&) const;
+    bool operator==(const TeamWorkBigInt&) const;
+    bool operator!=(const TeamWorkBigInt&) const;
     
     // addition operator; HugeInt + int
-    HugeInt operator+(int) const;
+    TeamWorkBigInt operator+(int) const;
     
     // addition operator;
     // HugeInt + string that represents large integer value
-    HugeInt operator-(int) const;
-    HugeInt operator+(const char*) const;
-    HugeInt operator-(const char*) const;
+    TeamWorkBigInt operator-(int) const;
+    TeamWorkBigInt operator+(const char*) const;
+    TeamWorkBigInt operator-(const char*) const;
+    TeamWorkBigInt operator*(int) const;
+    TeamWorkBigInt operator/(int) const;
+    TeamWorkBigInt& operator/=(int) const;
+    TeamWorkBigInt& operator+=(int) const;
     int getLength() const;
+    friend TeamWorkBigInt pow(const TeamWorkBigInt&, int times);
 private:
     short integer[digits];
 }; // end class HugeInt
 
 
-HugeInt::HugeInt(int t) {
+TeamWorkBigInt::TeamWorkBigInt(int t) {
     if (t == 0) {
         integer[0] = 0;
         integer[1] = -1;
@@ -74,7 +82,7 @@ HugeInt::HugeInt(int t) {
             }
         }
         if (dig == 1) {
-            integer[0] = t;
+            integer[0] = abs(t);
         }
         if (t < 0) {
             integer[0] = -integer[0];
@@ -84,7 +92,7 @@ HugeInt::HugeInt(int t) {
     }
     
 }
-HugeInt::HugeInt(const char* str) {
+TeamWorkBigInt::TeamWorkBigInt(const char* str) {
 
     int n = strlen(str);
     int dig = 0;
@@ -121,7 +129,7 @@ HugeInt::HugeInt(const char* str) {
     /*for (int j = 0; j < dig; j++) { cout << integer[j] << endl; }*/
 };
 
-int HugeInt::getLength() const {
+int TeamWorkBigInt::getLength() const {
     int i = 1;
     int length = 0;
     while (integer[i] >= 0) {
@@ -148,8 +156,8 @@ int compare(int a, int b) {
     else return b;
 }
 
-HugeInt HugeInt::operator+(const HugeInt& num) const {
-    HugeInt temp("0");
+TeamWorkBigInt TeamWorkBigInt::operator+(const TeamWorkBigInt& num) const {
+    TeamWorkBigInt temp("0");
     if (num.integer[0] < 0) {
         temp = num;
         temp.integer[0] = -temp.integer[0];
@@ -245,8 +253,8 @@ HugeInt HugeInt::operator+(const HugeInt& num) const {
     cout << temp.getLength();*/
     return temp;
 };
-bool HugeInt::operator>(const HugeInt& num) const {
-    HugeInt temp("0");
+bool TeamWorkBigInt::operator>(const TeamWorkBigInt& num) const {
+    TeamWorkBigInt temp("0");
     temp = *this - num;
     if (temp.integer[0] > 0) {
         return 1;
@@ -255,11 +263,11 @@ bool HugeInt::operator>(const HugeInt& num) const {
         return 0;
     }
 }
-bool HugeInt::operator<=(const HugeInt& num) const {
-    return !(*this > num);
+bool TeamWorkBigInt::operator<=(const TeamWorkBigInt& num) const {
+    return !(num.negetive(*this));
 }
-bool HugeInt::operator<(const HugeInt& num) const {
-    HugeInt temp("0");
+bool TeamWorkBigInt::operator<(const TeamWorkBigInt& num) const {
+    TeamWorkBigInt temp("0");
     temp = num-*this;
     if (temp.integer[0] > 0) {
         return 1;
@@ -268,11 +276,11 @@ bool HugeInt::operator<(const HugeInt& num) const {
         return 0;
     }
 }
-bool HugeInt::operator>=(const HugeInt& num) const {
-    return !(*this < num);
+bool TeamWorkBigInt::operator>=(const TeamWorkBigInt& num) const {
+    return !(negetive( num));
 }
-bool HugeInt::operator==(const HugeInt& num) const {
-    HugeInt temp("0");
+bool TeamWorkBigInt::operator==(const TeamWorkBigInt& num) const {
+    TeamWorkBigInt temp("0");
     temp = num - *this;
     if (temp.integer[0] == 0) {
         return 1;
@@ -281,11 +289,11 @@ bool HugeInt::operator==(const HugeInt& num) const {
         return 0;
     }
 }
-bool HugeInt::operator!=(const HugeInt& num) const {
+bool TeamWorkBigInt::operator!=(const TeamWorkBigInt& num) const {
     return !(*this == num);
 }
-HugeInt HugeInt::normalsub(const HugeInt& num)const {
-    HugeInt temp("0");
+TeamWorkBigInt TeamWorkBigInt::normalsub(const TeamWorkBigInt& num)const {
+    TeamWorkBigInt temp("0");
     int dig1 = Getdig(getLength());
     int dig2 = Getdig(num.getLength());
     int dig = 0;
@@ -377,8 +385,8 @@ HugeInt HugeInt::normalsub(const HugeInt& num)const {
 
 
 };
-bool HugeInt::negetive(const HugeInt& num)const {
-    HugeInt temp("0");
+bool TeamWorkBigInt::negetive(const TeamWorkBigInt& num)const {
+    TeamWorkBigInt temp("0");
     int dig1 = Getdig(getLength());
     int dig2 = Getdig(num.getLength());
     int dig = 0;
@@ -454,9 +462,9 @@ bool HugeInt::negetive(const HugeInt& num)const {
 
 
 }
-HugeInt HugeInt::operator-(const HugeInt& num) const {
+TeamWorkBigInt TeamWorkBigInt::operator-(const TeamWorkBigInt& num) const {
     
-    HugeInt temp("0");
+    TeamWorkBigInt temp("0");
     if (num.integer[0] < 0) {
         temp = num;
         temp.integer[0] = -temp.integer[0];
@@ -474,50 +482,100 @@ HugeInt HugeInt::operator-(const HugeInt& num) const {
     
 }
 
-HugeInt HugeInt::operator+(int t) const {
-    HugeInt temp(t);
+TeamWorkBigInt TeamWorkBigInt::operator+(int t) const {
+    TeamWorkBigInt temp(t);
     temp = temp + *this;
     return temp;
 
 };
-HugeInt HugeInt::operator+(const char* t) const{
-    HugeInt temp(t);
+TeamWorkBigInt TeamWorkBigInt::operator*(int t) const {
+    TeamWorkBigInt temp(t);
+    temp = *this*temp;
+    return temp;
+}
+TeamWorkBigInt TeamWorkBigInt::operator/(int t) const {
+    TeamWorkBigInt temp(t);
+    temp = *this/temp;
+    return temp;
+}
+TeamWorkBigInt& TeamWorkBigInt::operator/=(int t) const {
+    TeamWorkBigInt temp(t);
+    temp = *this / temp;
+    return temp;
+}
+TeamWorkBigInt& TeamWorkBigInt::operator+=(int t) const {
+    TeamWorkBigInt temp(t);
     temp = temp + *this;
     return temp;
 }
-HugeInt HugeInt::operator-(int t) const {
-    HugeInt temp(t);
+TeamWorkBigInt TeamWorkBigInt::operator+(const char* t) const{
+    TeamWorkBigInt temp(t);
+    temp = temp + *this;
+    return temp;
+}
+TeamWorkBigInt TeamWorkBigInt::operator-(int t) const {
+    TeamWorkBigInt temp(t);
     temp = *this - temp;
     return temp;
 
 };
-HugeInt HugeInt::operator-(const char* t) const {
-    HugeInt temp(t);
+TeamWorkBigInt TeamWorkBigInt::operator-(const char* t) const {
+    TeamWorkBigInt temp(t);
     temp = *this - temp;
     return temp;
 }
-HugeInt HugeInt::operator*(const HugeInt& num) const {
-    HugeInt ticker("0");
-    HugeInt temp("0");
-    HugeInt plus("1");
+TeamWorkBigInt TeamWorkBigInt::operator*(const TeamWorkBigInt& num) const {
+    TeamWorkBigInt ticker("1");
+    TeamWorkBigInt temp("0");
+    TeamWorkBigInt plus("1");
     while (ticker <= num) {
         temp = temp + *this;
         ticker = ticker + plus;
+        
     }
     return temp;
 }
-HugeInt HugeInt::operator/(const HugeInt& num) const {
-    HugeInt ticker("0");
-    HugeInt temp(*this);
-    HugeInt plus("1");
+TeamWorkBigInt TeamWorkBigInt::operator/(const TeamWorkBigInt& num) const {
+    if (integer[0] < 0) {
+        TeamWorkBigInt temp = *this;
+        temp.integer[0] = -temp.integer[0];
+        temp = temp.normaldiv( num);
+        temp.integer[0] = -temp.integer[0];
+        return temp;
+    }
+    else if (num.integer[0] < 0) {
+        TeamWorkBigInt temp = num;
+        temp.integer[0] = -temp.integer[0];
+        temp = normaldiv( temp);
+        temp.integer[0] = -temp.integer[0];
+        return temp;
+    }
+    else {
+        return normaldiv (num);
+    }
    
-    while (temp>=num) {
-        temp = temp-num;
+}
+TeamWorkBigInt TeamWorkBigInt::normaldiv(const TeamWorkBigInt& num) const {
+
+    TeamWorkBigInt ticker("0");
+    TeamWorkBigInt temp(*this);
+    TeamWorkBigInt plus("1");
+
+    while (temp >= num) {
+        temp = temp - num;
         ticker = ticker + plus;
     }
     return ticker;
 }
-ostream& operator<<(ostream& out, const HugeInt& t) {
+TeamWorkBigInt& TeamWorkBigInt::operator/=(const TeamWorkBigInt& num) const{
+    TeamWorkBigInt temp = *this / num;
+    return temp;
+}
+TeamWorkBigInt& TeamWorkBigInt::operator+=(const TeamWorkBigInt& num) const {
+    TeamWorkBigInt temp = *this + num;
+    return temp;
+}
+ostream& operator<<(ostream& out, const TeamWorkBigInt& t) {
     int dig= Getdig(t.getLength());
     for (int j = 0; j < dig; j++) { 
         if(t.integer[j]!=0){ out << t.integer[j]; }
@@ -531,10 +589,13 @@ ostream& operator<<(ostream& out, const HugeInt& t) {
     return out;
 
 };
-int main() {
-    HugeInt a(7654321);
-    HugeInt b(1234567);
-    HugeInt c(123);
-    cout << " "<<a*b << endl;
-    return 0;
-}
+TeamWorkBigInt pow(const TeamWorkBigInt& num, int times){
+    TeamWorkBigInt temp(num);
+    for (int i = 1; i <= times; i++) {
+        temp = temp * num;
+    }
+    return temp;
+};
+
+
+
